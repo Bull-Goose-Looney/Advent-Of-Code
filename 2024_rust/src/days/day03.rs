@@ -1,5 +1,5 @@
 use crate::utils::read_input;
-use regex::{Matches, Regex};
+use regex::Regex;
 use std::error::Error;
 
 
@@ -21,9 +21,9 @@ pub fn solve_p1() -> Result<String, Box<dyn Error>> {
 	Ok(format!("Result: {}", count))
 }
 
-pub fn solve_p2() -> Result<String, Box<dyn Error>> {
-    Ok("".to_string())
-}
+// pub fn solve_p2() -> Result<String, Box<dyn Error>> {
+//     Ok("".to_string())
+// }
 
 fn get_matches<'a>(input: &'a str, pattern: &'a str) -> Result<Vec<&'a str>, regex::Error> { 
     let reg = Regex::new(pattern).unwrap();
