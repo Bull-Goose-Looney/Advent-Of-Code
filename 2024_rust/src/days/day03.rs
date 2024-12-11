@@ -42,16 +42,17 @@ fn extract_values(statement: &str) -> Option<(i32, i32)> {
     })
 }
 
-// TODO, the code above passed on AOC, but these tests are failing, find out why
 #[test]
 fn test_get_matches() {
     let input = "xmul(2,4)%&mul[3,7]!@^do_not_mul(5,5)+mul(32,64]then(mul(11,8)mul(8,5))";
     let pattern = r"mul\(\d{0,3}\,\d{0,3}\)";
-    assert!(get_matches(input, pattern).unwrap() == vec!["mul(2,4)", "mul(5,5)", "mul(11,18)", "mul(8,5)"]);
+
+    assert!(get_matches(input, pattern).unwrap() == vec!["mul(2,4)", "mul(5,5)", "mul(11,8)", "mul(8,5)"]);
 }
 
 #[test]
 fn test_extract_values() {
-    let statement = "mat(2,4)";
-    assert!(extract_values(statement).unwrap() == (2, 4));
+    assert!(extract_values("mul(2,4)").unwrap() == (2, 4));
+    assert!(extract_values("mul(22,33)").unwrap() == (22, 33));
+    assert!(extract_values("mul(222,333)").unwrap() == (222, 333));
 }
