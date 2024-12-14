@@ -1,4 +1,4 @@
-use crate::utils::read_input;
+use crate::utils::{read_input, get_matches};
 use regex::Regex;
 use std::error::Error;
 
@@ -21,16 +21,30 @@ pub fn solve_p1() -> Result<String, Box<dyn Error>> {
 	Ok(format!("Result: {}", count))
 }
 
-// pub fn solve_p2() -> Result<String, Box<dyn Error>> {
-//     Ok("".to_string())
-// }
+pub fn solve_p2() -> Result<String, Box<dyn Error>> {
+    let input = read_input("inputs/day03.txt")?;
+    let pattern = r"(do\(\)|don\'t\(\))|(mul\(\d{0,3}\,\d{0,3}\))";
+    let matches: Vec<&str> = get_matches(&input, pattern)?;
 
-fn get_matches<'a>(input: &'a str, pattern: &'a str) -> Result<Vec<&'a str>, regex::Error> { 
-    let reg = Regex::new(pattern).unwrap();
-    Ok(reg.find_iter(input)
-        .map(|mat| mat.as_str())
-        .collect())
-} 
+    let mut count = 0;
+    let mut enabled = true;
+
+    for mat in matches {
+        if mat == "do()" {
+            enabled = true;
+        } else if mat == "don't()" {
+            enabled = false;
+        }
+
+        if enabled {
+            if let Some((n, m)) = extract_values(mat) {
+                count += n * m;
+            };
+        }
+    }
+
+	Ok(format!("Result: {}", count))
+}
 
 fn extract_values(statement: &str) -> Option<(i32, i32)> {
     let reg = Regex::new(r"mul\((\d+),(\d+)\)").unwrap();
@@ -43,11 +57,11 @@ fn extract_values(statement: &str) -> Option<(i32, i32)> {
 }
 
 #[test]
-fn test_get_matches() {
-    let input = "xmul(2,4)%&mul[3,7]!@^do_not_mul(5,5)+mul(32,64]then(mul(11,8)mul(8,5))";
-    let pattern = r"mul\(\d{0,3}\,\d{0,3}\)";
+fn test_get_matches_groups() {
+    let input = "xmul(2,4)&mul[3,7]!^don't()_mul(5,5)+mul(32,64](mul(11,8)undo()?mul(8,5))";
+    let pattern = r"(do\(\)|don\'t\(\))|(mul\(\d{0,3}\,\d{0,3}\))";
 
-    assert!(get_matches(input, pattern).unwrap() == vec!["mul(2,4)", "mul(5,5)", "mul(11,8)", "mul(8,5)"]);
+    assert!(get_matches(input, pattern).unwrap() == vec!["mul(2,4)","don't()", "mul(5,5)", "mul(11,8)", "do()", "mul(8,5)"]);
 }
 
 #[test]

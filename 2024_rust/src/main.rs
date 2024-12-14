@@ -33,4 +33,9 @@ fn main() {
         Err(e) => println!("Error solving Day 3, Part 1: {}", e),
     }
 
+    match days::day03::solve_p2() {
+        Ok(result) => println!("Day 3, Part 2 {}", result),
+        Err(e) => println!("Error solving Day 3, Part 2: {}", e),
+    }
+
 }

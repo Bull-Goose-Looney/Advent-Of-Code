@@ -1,10 +1,27 @@
 use std::fs;
 use std::path::Path;
 
+use regex::Regex;
+
 pub fn read_input(file_path: &str) -> Result<String, Box<dyn std::error::Error>> {
     if !Path::new(file_path).exists() {
         return Err(format!("Input file not found: {}", file_path).into());
     }
     let content = fs::read_to_string(file_path)?;
     Ok(content)
+}
+
+pub fn get_matches<'a>(input: &'a str, pattern: &'a str) -> Result<Vec<&'a str>, regex::Error> { 
+    let reg = Regex::new(pattern).unwrap();
+    Ok(reg.find_iter(input)
+        .map(|mat| mat.as_str())
+        .collect())
+} 
+
+#[test]
+fn test_get_matches() {
+    let input = "xmul(2,4)%&mul[3,7]!@^do_not_mul(5,5)+mul(32,64]then(mul(11,8)mul(8,5))";
+    let pattern = r"mul\(\d{0,3}\,\d{0,3}\)";
+
+    assert!(get_matches(input, pattern).unwrap() == vec!["mul(2,4)", "mul(5,5)", "mul(11,8)", "mul(8,5)"]);
 }
