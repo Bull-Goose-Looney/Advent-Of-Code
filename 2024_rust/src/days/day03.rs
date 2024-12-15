@@ -9,7 +9,7 @@ pub fn solve_p1() -> Result<String, Box<dyn Error>> {
 
     let matches: Vec<&str> = get_matches(&input, pattern)?;
     for mat in &matches {
-        println!("Match: {}", mat);
+        // println!("Match: {}", mat);
     }
 
     let mut count = 0;
@@ -51,7 +51,7 @@ fn extract_values(statement: &str) -> Option<(i32, i32)> {
     reg.captures(statement).and_then(|caps| {
         let n1 = caps.get(1)?.as_str().parse::<i32>().ok()?;
         let n2 = caps.get(2)?.as_str().parse::<i32>().ok()?;
-        println!("n1: {}, n2: {}", n1, n2);
+        // println!("n1: {}, n2: {}", n1, n2);
         Some((n1, n2))
     })
 }
