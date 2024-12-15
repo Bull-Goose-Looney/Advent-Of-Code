@@ -6,11 +6,7 @@ use std::error::Error;
 pub fn solve_p1() -> Result<String, Box<dyn Error>> {
     let input = read_input("inputs/day03.txt")?;
     let pattern = r"mul\(\d{0,3}\,\d{0,3}\)";
-
     let matches: Vec<&str> = get_matches(&input, pattern)?;
-    for mat in &matches {
-        // println!("Match: {}", mat);
-    }
 
     let mut count = 0;
     for mat in matches {
