@@ -1,4 +1,6 @@
-use crate::utils::{get_matches, get_matches_overlap, read_input};
+use regex::Regex;
+
+use crate::utils::{get_matches_overlap, read_input};
 use std::error::Error;
 
 
@@ -12,11 +14,13 @@ pub fn solve_p1() -> Result<String, Box<dyn Error>> {
 	Ok(format!("Result: {}", count))
 }
 
-// pub fn solve_p2() -> Result<String, Box<dyn Error>> {
-//     let input = read_input("inputs/day04.txt")?;
-//     let mut count = 0;
-// 	Ok(format!("Result: {}", count))
-// }
+pub fn solve_p2() -> Result<String, Box<dyn Error>> {
+    let input = read_input("inputs/day04.txt")?;
+    let lines: Vec<&str> = input.lines().collect();
+    let count = get_crossed_masses(&lines)?;
+
+	Ok(format!("Result: {}", count))
+}
 
 fn get_rows_cols_diagonals(input_lines: &Vec<&str>) -> Vec<String> {
     let max_row = input_lines.len(); // Number of rows
@@ -43,13 +47,41 @@ fn get_rows_cols_diagonals(input_lines: &Vec<&str>) -> Vec<String> {
     result.extend(cols);
     result.extend(fdiag);
     result.extend(bdiag);
-
-    // for r in &result {
-    //     println!("{}", r);
-    // }
-
     result
 
+}
+
+fn get_crossed_masses(input_lines: &Vec<&str>) -> Result<i32, Box<dyn Error>> {
+    let char_matrix = to_char_matrix(&input_lines);
+    let mut count = 0;
+
+    let reg = Regex::new(r"MAS|SAM")?;
+    for row_index in 1..char_matrix.len()-1 {
+        for col_index in 1..char_matrix[row_index].len()-1 {
+            let current_char = char_matrix[row_index][col_index];
+            if current_char == 'A' {
+
+                let top_left = char_matrix[row_index-1][col_index-1];
+                let top_right = char_matrix[row_index-1][col_index + 1];
+                let bottom_left = char_matrix[row_index+1][col_index-1];
+                let bottom_right = char_matrix[row_index+1][col_index+1];
+
+                let criss: String = [top_left, current_char, bottom_right].into_iter().collect();
+                let cross: String = [top_right, current_char, bottom_left].into_iter().collect();
+
+                if reg.is_match(&criss) && reg.is_match(&cross) {
+                    count += 1;
+                }
+            }
+        }
+    }
+    Ok(count)
+}
+
+fn to_char_matrix(input: &Vec<&str>) -> Vec<Vec<char>> {
+    input.iter()
+         .map(|line| line.chars().collect()) // Convert each &str into Vec<char>
+         .collect()
 }
 
 fn count_occurences(pattern: &str, input: &Vec<String>) -> Result<i64, Box<dyn Error>> {
@@ -60,7 +92,6 @@ fn count_occurences(pattern: &str, input: &Vec<String>) -> Result<i64, Box<dyn E
     }
     Ok(count)
 }
-
 
 #[test]
 fn test_get_rows_cols_diagonals() {
@@ -77,7 +108,6 @@ fn test_get_rows_cols_diagonals() {
     }
     assert!(result.len() == 16);
 }
-
 
 #[test]
 fn test_count_occurences() {
