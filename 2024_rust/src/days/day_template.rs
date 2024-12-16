@@ -12,7 +12,3 @@ pub fn solve_p2() -> Result<String, Box<dyn Error>> {
     Ok("".to_string())
 }
 
-#[test]
-fn test() {
-    // test
-}
