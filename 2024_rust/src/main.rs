@@ -48,4 +48,10 @@ fn main() {
         Err(e) => println!("Error solving Day 4, Part 2: {}", e),
     }
 
+    match days::day05::solve_p1() {
+        Ok(result) => println!("Day 5, Part 1 {}", result),
+        Err(e) => println!("Error solving Day 5, Part 1: {}", e),
+    }
+
+
 }
